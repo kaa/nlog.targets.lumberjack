@@ -31,10 +31,10 @@ Configure Logstash as a target in your NLog.config file,
 
 ### Options
 
-`host`: The IP address or host name where logs should be sent. (*Required*)
-`port`: Port number on host to connect to (default: 5000)
-'fingerprint': If set, this will be used to verify the certificate hash of the remote server.
-'encoding': Text encoding to be used for properties.
+* `host`: The IP address or host name where logs should be sent. (*Required*)
+* `port`: Port number on host to connect to (default: 5000)
+* `fingerprint`: If set, this will be used to verify the certificate hash of the remote server.
+* `encoding`: Text encoding to be used for properties.
 
 This target supports the standard NLog 
 [layout](https://github.com/NLog/NLog/wiki/Layouts) directive to modify
