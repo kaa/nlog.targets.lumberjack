@@ -16,7 +16,7 @@ namespace NLog.Targets.Lumberjack {
 		private SemaphoreSlim streamSemaphore = new SemaphoreSlim(1);
 		private SemaphoreSlim writeSemaphore = new SemaphoreSlim(1);
 		[RequiredParameter]
-		public string Address { get; set; }
+		public string Host { get; set; }
 		public int Port { get; set; }
 		public string Fingerprint { get; set; }
 		public Encoding Encoding { get; set; }
@@ -31,7 +31,7 @@ namespace NLog.Targets.Lumberjack {
 			try {
 				if(stream!=null) return stream;
 				var tcpClient = new TcpClient();
-				await tcpClient.ConnectAsync(Address, Port);
+				await tcpClient.ConnectAsync(Host, Port);
 				stream = new SslStream(tcpClient.GetStream(), false, (source, cert, chain, policy) => {
 					return Fingerprint==null || Fingerprint.Equals(cert.GetCertHashString(), StringComparison.OrdinalIgnoreCase);
 				});
