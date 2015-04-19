@@ -6,7 +6,7 @@
     <title>$title$</title>
     <authors>$author$</authors>
     <owners>$author$</owners>
-    <licenseUrl>http://github.com/kaa/nlog.targets.lumberjack</licenseUrl>
+    <licenseUrl>https://github.com/kaa/nlog.targets.lumberjack/blob/master/LICENSE</licenseUrl>
     <projectUrl>http://github.com/kaa/nlog.targets.lumberjack</projectUrl>
 		<iconUrl>http://nlog-project.org/N.png</iconUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
