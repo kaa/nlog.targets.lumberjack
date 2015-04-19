@@ -1,0 +1,18 @@
+<?xml version="1.0"?>
+<package >
+  <metadata>
+    <id>$id$</id>
+    <version>$version$</version>
+    <title>$title$</title>
+    <authors>$author$</authors>
+    <owners>$author$</owners>
+    <licenseUrl>http://github.com/kaa/nlog.targets.lumberjack</licenseUrl>
+    <projectUrl>http://github.com/kaa/nlog.targets.lumberjack</projectUrl>
+		<iconUrl>http://nlog-project.org/N.png</iconUrl>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <description>$description$</description>
+    <releaseNotes></releaseNotes>
+    <copyright>Copyright Joakim Beijar 2015</copyright>
+    <tags>NLog Lumberjack Logstash</tags>
+  </metadata>
+</package>
