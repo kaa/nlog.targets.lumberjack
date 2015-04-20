@@ -5,10 +5,6 @@ A custom target for [NLog](http://nlog-project.org/) that allows sending logs ov
 
     nuget install nlog.targets.lumberjack
 
-or
-
-    nuget install nlog.targets.lumberjack
-
 ## Configuration
 
 Configure Logstash as a target in your NLog.config file,
