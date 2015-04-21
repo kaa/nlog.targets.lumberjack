@@ -88,6 +88,12 @@ namespace NLog.Targets.Lumberjack {
 				WriteKeyValuePair(stream, "offset", "0");
 				WriteKeyValuePair(stream, "host", Environment.MachineName);
 				WriteKeyValuePair(stream, "line", Layout.Render(logEvent));
+				WriteKeyValuePair(stream, "level", logEvent.Level.Name);
+				WriteKeyValuePair(stream, "eventTimestamp", logEvent.TimeStamp.ToString("g"));
+				if(logEvent.Message!=null) {
+					WriteKeyValuePair(stream, "exceptionMessage", logEvent.Exception.Message);
+					WriteKeyValuePair(stream, "exceptionStack", logEvent.Exception.StackTrace);
+				}
 				foreach(var property in logEvent.Properties) { 
 					WriteKeyValuePair(stream, property.Key.ToString(), property.Value.ToString());
 				}
