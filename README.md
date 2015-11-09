@@ -17,7 +17,7 @@ Configure Logstash as a target in your NLog.config file,
     <add assembly="NLog.Targets.Lumberjack" />
   </extensions>
   <targets>
-    <target name="logstash" type="Lumberjack" host="127.0.01" port="5001" layout="${message}/>
+    <target name="logstash" type="Lumberjack" host="127.0.01" port="5001" layout="${message}"/>
   </targets>
   <rules>
     <logger name="*" minLevel="Trace" appendTo="logstash"/>
