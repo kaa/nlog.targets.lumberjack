@@ -80,32 +80,34 @@ namespace NLog.Targets.Lumberjack {
 		private async Task WriteAsync(LogEventInfo logEvent) {
 			if(DateTime.Now.Subtract(lastExceptionAt).TotalSeconds < 60)
 				return;
-			await writeSemaphore.WaitAsync();
+
+			var stream = new MemoryStream();
+			stream.WriteByte(1);
+			stream.WriteByte((byte)'D');
+			var sequenceAndCountBuffer = new byte[8];
+			sequenceAndCountBuffer[0] = (byte)(logEvent.SequenceID >> 24);
+			sequenceAndCountBuffer[1] = (byte)(logEvent.SequenceID >> 16);
+			sequenceAndCountBuffer[2] = (byte)(logEvent.SequenceID >> 8);
+			sequenceAndCountBuffer[3] = (byte)(logEvent.SequenceID);
+			sequenceAndCountBuffer[7] = (byte)(4 + logEvent.Properties.Count);
+			stream.Write(sequenceAndCountBuffer, 0, 8);
+			WriteKeyValuePair(stream, "logger", logEvent.LoggerName);
+			WriteKeyValuePair(stream, "offset", "0");
+			WriteKeyValuePair(stream, "host", Environment.MachineName);
+			WriteKeyValuePair(stream, "line", Layout.Render(logEvent));
+			WriteKeyValuePair(stream, "level", logEvent.Level.Name);
+			WriteKeyValuePair(stream, "eventTimestamp", logEvent.TimeStamp.ToString("g"));
+			if(logEvent.Message != null) {
+				WriteKeyValuePair(stream, "exceptionMessage", logEvent.Exception.Message);
+				WriteKeyValuePair(stream, "exceptionStack", logEvent.Exception.StackTrace);
+			}
+			foreach(var property in logEvent.Properties) {
+				WriteKeyValuePair(stream, property.Key.ToString(), property.Value.ToString());
+			}
+
+			var sslStream = await GetStream();
 			try {
-				var stream = new MemoryStream();
-				stream.WriteByte(1);
-				stream.WriteByte((byte)'D');
-				var sequenceAndCountBuffer = new byte[8];
-				sequenceAndCountBuffer[0] = (byte)(logEvent.SequenceID>>24);
-				sequenceAndCountBuffer[1] = (byte)(logEvent.SequenceID>>16);
-				sequenceAndCountBuffer[2] = (byte)(logEvent.SequenceID>>8);
-				sequenceAndCountBuffer[3] = (byte)(logEvent.SequenceID);
-				sequenceAndCountBuffer[7] = (byte)(4 + logEvent.Properties.Count);
-				stream.Write(sequenceAndCountBuffer, 0, 8);
-				WriteKeyValuePair(stream, "logger", logEvent.LoggerName);
-				WriteKeyValuePair(stream, "offset", "0");
-				WriteKeyValuePair(stream, "host", Environment.MachineName);
-				WriteKeyValuePair(stream, "line", Layout.Render(logEvent));
-				WriteKeyValuePair(stream, "level", logEvent.Level.Name);
-				WriteKeyValuePair(stream, "eventTimestamp", logEvent.TimeStamp.ToString("g"));
-				if(logEvent.Message!=null) {
-					WriteKeyValuePair(stream, "exceptionMessage", logEvent.Exception.Message);
-					WriteKeyValuePair(stream, "exceptionStack", logEvent.Exception.StackTrace);
-				}
-				foreach(var property in logEvent.Properties) { 
-					WriteKeyValuePair(stream, property.Key.ToString(), property.Value.ToString());
-				}
-				var sslStream = await GetStream();
+				await writeSemaphore.WaitAsync();
 				await sslStream.WriteAsync(stream.ToArray(), 0, (int)stream.Length);
 			} catch(Exception e) { 
 				InternalLogger.Error("Exception {0} while sending lumberjack frame.", e.Message);
