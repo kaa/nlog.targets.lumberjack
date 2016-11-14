@@ -56,7 +56,15 @@ namespace NLog.Targets.Lumberjack {
 
 		protected override void CloseTarget() {
 			base.CloseTarget();
-			stream.Close();
+
+			streamSemaphore.Wait();
+			try {
+				if(stream == null) return;
+				stream.Dispose();
+				stream = null;
+			} finally {
+				streamSemaphore.Release();
+			}
 		}
 
 		protected override void Write(LogEventInfo logEvent) {
